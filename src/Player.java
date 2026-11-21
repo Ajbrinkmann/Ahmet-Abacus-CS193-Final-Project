@@ -1,0 +1,94 @@
+import java.util.ArrayList;
+import java.io.PrintWriter;
+import java.io.BufferedReader;
+import java.io.InputStreamReader;
+import java.io.IOException;
+import java.io.Console;
+import java.io.FileWriter;
+import java.io.FileReader;
+import java.io.FileNotFoundException;
+import java.io.EOFException;
+import java.util.Arrays;
+import java.lang.Math;
+public class Player {
+    private double winRate;
+    private int mostCommonNumber;
+    private String playerName;
+    private double averageGuessCount;
+    private int gamesPlayed;
+
+    public Player(String playerName) {
+        this.playerName = playerName;
+        this.mostCommonNumber = -1;
+        this.winRate = 0;
+        this.gamesPlayed = 0;
+        this.averageGuessCount = 0;
+    }
+
+    public Player() {
+    }
+
+    public String[] retrieveStats() {
+        double winCount = 0;
+        double guessCount = 0;
+        int[] usedNumbers = new int[10];
+        try (BufferedReader br = new BufferedReader(new FileReader("GameLog.csv"))) {
+            while (true) {
+                String line = br.readLine();
+                if (line == null) {
+                    break;
+                }
+                String[] gameStats = line.split(",");
+                if (gameStats[1].equals("Player 1: " + playerName)) {
+                    gamesPlayed++;
+                    guessCount = Integer.parseInt(gameStats[3].substring(14 + playerName.length()));
+                    String givenNumber = gameStats[2].substring(11 + playerName.length());
+                    for (int i = 0; i < Integer.parseInt(gameStats[0].substring(12)); i++) {
+                        usedNumbers[givenNumber.charAt(i) - 48]++;
+                    }
+                }
+
+                if (gameStats[4].equals("Player 2: " + playerName)) {
+                    gamesPlayed++;
+                    guessCount = Integer.parseInt(gameStats[6].substring(14 + playerName.length()));
+                    String givenNumber = gameStats[5].substring(11 + playerName.length());
+                    for (int i = 0; i < Integer.parseInt(gameStats[0].substring(12)); i++) {
+                        usedNumbers[givenNumber.charAt(i) - 48]++;
+                    }
+                }
+                
+                if (gameStats[7].equals("Winner: " + playerName) || gameStats[7].equals("Tie")) {
+                    winCount++;
+                } 
+            }
+        } catch (IOException e) {e.printStackTrace();} catch (NumberFormatException n) {IO.println("NUMBER FORMAT BAD");}
+
+
+        winRate = winCount / gamesPlayed;
+        averageGuessCount = guessCount / gamesPlayed;
+        int max = 0;
+        for (int i = 0; i < 10; i++) {
+            max = Math.max(max, usedNumbers[i]);
+        }
+        for (int i = 0; i < 10; i++) {
+            if (usedNumbers[i] == max) {
+                mostCommonNumber = i;
+                break;
+            }
+        }
+
+        String[] output = {String.format("%.2f", winRate), String.format("%.2f", winRate), String.valueOf(gamesPlayed), String.valueOf(mostCommonNumber)};
+        return output;
+        // String[] output = new String[4];
+        // output[0] = String.valueOf(winCount);
+        // output[1] = String.valueOf(guessCount);
+        // output[2] = String.valueOf(gamesPlayed);
+        // output[3] = Arrays.toString(usedNumbers);
+        // return output;
+    }
+
+    public void main() {
+        Player a = new Player("Alden");
+        IO.println(String.join(",", a.retrieveStats()));
+    }
+}

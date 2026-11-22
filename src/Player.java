@@ -77,7 +77,7 @@ public class Player {
             }
         }
 
-        String[] output = {String.format("%.2f", winRate), String.format("%.2f", winRate), String.valueOf(gamesPlayed), String.valueOf(mostCommonNumber)};
+        String[] output = {playerName, String.format("%.2f", winRate), String.format("%.2f", winRate), String.valueOf(gamesPlayed), String.valueOf(mostCommonNumber)};
         return output;
         // String[] output = new String[4];
         // output[0] = String.valueOf(winCount);
@@ -90,5 +90,29 @@ public class Player {
     public void main() {
         Player a = new Player("Alden");
         IO.println(String.join(",", a.retrieveStats()));
+    }
+
+    public void updatePlayerLog(String[] playerStats) {
+        ArrayList<String> lines = new ArrayList<String>();
+        try (BufferedReader br = new BufferedReader(new FileReader("PlayerLog.csv"))) {
+            String line;
+            while ((line = br.readLine()) != null) {
+                if (line.split(",")[0].equals(playerStats[0])) {
+                    lines.add(String.join(",", playerStats));
+                } else {
+                    lines.add(line);
+                }
+            }
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
+        try (PrintWriter pw = new PrintWriter(new FileWriter("PlayerLog.csv"))) {
+            for (String line : lines) {
+                pw.println(line);
+            }
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
     }
 }

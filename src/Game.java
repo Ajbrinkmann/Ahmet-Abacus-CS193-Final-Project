@@ -30,7 +30,7 @@ public class Game {
                 }
                 IO.println("Not an accepted digit count.");
             } catch (NumberFormatException n) {
-                IO.println("Not an accepted digit count.");
+                IO.println("Not a number.");
             }
         }
 
@@ -38,26 +38,43 @@ public class Game {
         //Player Numbers will be kept as Strings because we need to check individual digits later. 
         //This also takes out the need for a number format check
         player1Name = IO.readln("Enter Player 1 Name: ");
+        Console console = System.console();
         while (true) {
-            Console console = System.console();
-            char[] number = console.readPassword("Enter Player 1 Number (of " + digitCount + " digits): ");
+            char[] number = console.readPassword("Enter Player 1 Number (of " + digitCount + " digits) or 'r' for a random number: ");
             p2Target = new String(number);
-            if (p2Target.strip().length() == digitCount) {
-                break;
-            } else {
-                IO.println("Wrong digit count, try again");
+            try {
+                int num = Integer.parseInt(p2Target);
+                if (p2Target.strip().length() == digitCount) {
+                    break;
+                } else {
+                    IO.println("Wrong digit count, try again");
+                }
+            } catch (NumberFormatException n) {
+                if (p2Target.equals("r")) {
+                    p2Target = Integer.toString((int) (Math.random() * Math.pow(10, digitCount)));
+                    break;
+                } else {
+                    IO.println("Invalid input. Try again");
+                }
             }
         }
 
         player2Name = IO.readln("Enter Player 2 Name: ");
         while (true) {
-            Console console = System.console();
-            char[] number = console.readPassword("Enter Player 2 Number (of " + digitCount + " digits): ");
+            char[] number = console.readPassword("Enter Player 2 Number (of " + digitCount + " digits) or 'r' for a random number: ");
             p1Target = new String(number);
-            if (p1Target.strip().length() == digitCount) {
-                break;
-            } else {
-                IO.println("Wrong digit count, try again");
+            try {
+                int num = Integer.parseInt(p1Target);
+                if (p1Target.strip().length() == digitCount) {
+                    break;
+                } else {
+                    IO.println("Wrong digit count, try again");
+                }
+            } catch (NumberFormatException n) {
+                if (p1Target.equals("r")) {
+                    p1Target = Integer.toString((int) (Math.random() * Math.pow(10, digitCount)));
+                    break;
+                }
             }
         }
     }
@@ -67,6 +84,8 @@ public class Game {
         playGame();
         String winner = endOfGame();
         updateGameLog(retrieveGameData(winner));
+        (new Player(player1Name)).endOfGameUpdate();
+        (new Player(player2Name)).endOfGameUpdate();
     }
 
     public void p1Turn() {   
@@ -75,14 +94,14 @@ public class Game {
         String guess = "";
         while (true) {
             guess = IO.readln(player1Name + "'s Guess: ");
-            if (guess.length() != digitCount) {
-                IO.println("Invalid Digit Count. Try Again");
-                continue;
-            }
             try {Integer.parseInt(guess);} catch (NumberFormatException n) {
                 IO.println("Try a number this time");
                 continue;
                 }
+            if (guess.length() != digitCount) {
+                IO.println("Invalid Digit Count. Try Again");
+                continue;
+            }
             break;
         }
         //"used" boolean array added to ensure duplicates in guess were not double counted
@@ -112,14 +131,14 @@ public class Game {
         String guess = "";
         while (true) {
             guess = IO.readln(player2Name + "'s Guess: ");
-            if (guess.length() != digitCount) {
-                IO.println("Invalid Digit Count. Try Again");
-                continue;
-            }
             try {Integer.parseInt(guess);} catch (NumberFormatException n) {
                 IO.println("Try a number this time");
                 continue;
                 }
+            if (guess.length() != digitCount) {
+                IO.println("Invalid Digit Count. Try Again");
+                continue;
+            }
             break;
         }
         boolean[] used = new boolean[digitCount];

@@ -1,0 +1,6 @@
+DigitCount,Player 1 Name,Player 1 Number,Player 1 Guess Count,Player 2 Name,Player 2 Number,Player 2 Guess Count,Winner
+DigitCount: 4,Player 1: Alden,Alden's number: 1234,Alden guess count: 3,Player 2: Shaurya,Shaurya's number: 5678,Shaurya guess count: 3,Winner: Shaurya
+DigitCount: 3,Player 1: Amelia,Amelia's number: 150,Amelia guess count: 7,Player 2: Aladdin,Aladdin's number: 410,Aladdin guess count: 7,Winner: Aladdin
+DigitCount: 4,Player 1: Dash,Dash's number: 4496,Dash guess count: 7,Player 2: Violet,Violet's number: 1392,Violet guess count: 7,Winner: Violet
+DigitCount: 3,Player 1: George,George's number: 130,George guess count: 6,Player 2: John,John's number: 725,John guess count: 6,Winner: John
+DigitCount: 3,Player 1: Ahmet,Ahmet's number: 986,Ahmet guess count: 5,Player 2: Alden,Alden's number: 590,Alden guess count: 5,Winner: Alden

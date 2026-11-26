@@ -9,7 +9,6 @@ import java.io.FileReader;
 import java.io.FileNotFoundException;
 import java.io.EOFException;
 import java.util.Arrays;
-import java.lang.Math;
 public class Player {
     private double winRate;
     private int mostCommonNumber;
@@ -77,31 +76,29 @@ public class Player {
             }
         }
 
-        String[] output = {playerName, String.format("%.2f", winRate), String.format("%.2f", winRate), String.valueOf(gamesPlayed), String.valueOf(mostCommonNumber)};
+        String[] output = {playerName, String.format("%.2f", winRate), String.format("%.2f", averageGuessCount), String.valueOf(gamesPlayed), String.valueOf(mostCommonNumber)};
         return output;
-        // String[] output = new String[4];
-        // output[0] = String.valueOf(winCount);
-        // output[1] = String.valueOf(guessCount);
-        // output[2] = String.valueOf(gamesPlayed);
-        // output[3] = Arrays.toString(usedNumbers);
-        // return output;
     }
 
-    public void main() {
-        Player a = new Player("Alden");
-        IO.println(String.join(",", a.retrieveStats()));
+    public void endOfGameUpdate() {
+        updatePlayerLog(retrieveStats());
     }
 
     public void updatePlayerLog(String[] playerStats) {
         ArrayList<String> lines = new ArrayList<String>();
         try (BufferedReader br = new BufferedReader(new FileReader("PlayerLog.csv"))) {
             String line;
+            boolean found = false;
             while ((line = br.readLine()) != null) {
                 if (line.split(",")[0].equals(playerStats[0])) {
                     lines.add(String.join(",", playerStats));
+                    found = true;
                 } else {
                     lines.add(line);
                 }
+            }
+            if (!found) {
+                lines.add(String.join(",", playerStats));
             }
         } catch (IOException e) {
             e.printStackTrace();

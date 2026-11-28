@@ -6,9 +6,6 @@ import java.io.IOException;
 import java.io.Console;
 import java.io.FileWriter;
 import java.io.FileReader;
-import java.io.FileNotFoundException;
-import java.io.EOFException;
-import java.util.Random;
 public class Game {
     //SETUP
     private String player1Name;
@@ -88,11 +85,8 @@ public class Game {
         }
     }
 
+    //Used for Computer Opponent - simplifies random guess/number generation
     public int generateRandom(int digitCount) {
-        if (digitCount <= 0) {
-            throw new IllegalArgumentException("Digit count must be at least 1");
-        }
-        
         int min = (int) Math.pow(10, digitCount - 1);
         int max = (int) Math.pow(10, digitCount) - 1;        
 
@@ -100,7 +94,6 @@ public class Game {
         if (digitCount == 1) {
             min = 0;
         }
-        
         return (int) (Math.random() * (max - min + 1)) + min;
     }
 
@@ -124,7 +117,7 @@ public class Game {
                 continue;
                 }
             if (guess.length() != digitCount) {
-                IO.println("Invalid Digit Count. Try Again");
+                IO.println("Invalid digit count. Try again");
                 continue;
             }
             break;
@@ -150,6 +143,7 @@ public class Game {
         }
     }
 
+    //Only difference between p1 and p2 turn is that p2 has random option
     public void p2Turn() {  
         int plusCount = 0;
         int minusCount = 0; 
@@ -164,7 +158,7 @@ public class Game {
                     continue;
                     }
                 if (guess.length() != digitCount) {
-                    IO.println("Invalid Digit Count. Try Again");
+                    IO.println("Invalid digit count. Try again");
                     continue;
                 }
             }
@@ -190,6 +184,7 @@ public class Game {
         }
     }
 
+    //Displays "guess table" from README, helpful for users to organize thoughts
     public void displayGuesses(ArrayList<String> guesses) {
         IO.println("Previous Guesses:");
         for (int i = 0; i < guesses.size(); i++) {
@@ -207,7 +202,7 @@ public class Game {
             IO.println("Tie");
         }
         else if (p1WinCondition) {
-            winner = player2Name;
+            winner = player1Name;
             IO.println(player1Name + " Victory!");
         }
         else if (p2WinCondition) {
@@ -241,6 +236,7 @@ public class Game {
         return output;
     }
 
+    //GameData will come from retrieveGameData; parameter is not necessary but helps with organization
     public void updateGameLog(String[] gameData) {
         try (PrintWriter pw = new PrintWriter(new FileWriter("GameLog.csv", true))) {
             pw.println(String.join(",", gameData));

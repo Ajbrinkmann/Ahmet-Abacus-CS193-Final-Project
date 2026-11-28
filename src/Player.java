@@ -3,12 +3,8 @@ import java.io.PrintWriter;
 import java.io.BufferedReader;
 import java.io.InputStreamReader;
 import java.io.IOException;
-import java.io.Console;
 import java.io.FileWriter;
 import java.io.FileReader;
-import java.io.FileNotFoundException;
-import java.io.EOFException;
-import java.util.Arrays;
 public class Player {
     private double winRate;
     private int mostCommonNumber;
@@ -24,6 +20,7 @@ public class Player {
         this.averageGuessCount = 0;
     }
 
+    //Program required an empty constructor to run; never called
     public Player() {
     }
 
@@ -43,6 +40,7 @@ public class Player {
                     guessCount = Integer.parseInt(gameStats[3].substring(14 + playerName.length()));
                     String givenNumber = gameStats[2].substring(11 + playerName.length());
                     for (int i = 0; i < Integer.parseInt(gameStats[0].substring(12)); i++) {
+                        //This is using char unicode math
                         usedNumbers[givenNumber.charAt(i) - 48]++;
                     }
                 }
@@ -60,9 +58,13 @@ public class Player {
                     winCount++;
                 } 
             }
-        } catch (IOException e) {e.printStackTrace();} catch (NumberFormatException n) {IO.println("NUMBER FORMAT BAD");}
+        } catch (IOException e) {
+            e.printStackTrace();
+        } catch (NumberFormatException n) {
+            IO.println("NUMBER FORMAT BAD");
+        }
 
-
+        //These are all the final calculations after the gamelog has been read
         winRate = winCount / gamesPlayed;
         averageGuessCount = guessCount / gamesPlayed;
         int max = 0;
@@ -70,6 +72,7 @@ public class Player {
             max = Math.max(max, usedNumbers[i]);
         }
         for (int i = 0; i < 10; i++) {
+            //If there is a tie in most common number, the first one in ascending order will be chosen
             if (usedNumbers[i] == max) {
                 mostCommonNumber = i;
                 break;

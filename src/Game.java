@@ -8,6 +8,7 @@ import java.io.FileWriter;
 import java.io.FileReader;
 import java.io.FileNotFoundException;
 import java.io.EOFException;
+import java.util.Random;
 public class Game {
     //SETUP
     private String player1Name;
@@ -51,7 +52,7 @@ public class Game {
                 }
             } catch (NumberFormatException n) {
                 if (p2Target.equals("r")) {
-                    p2Target = Integer.toString((int) (Math.random() * Math.pow(10, digitCount)));
+                    p2Target = Integer.toString(generateRandom(digitCount));
                     break;
                 } else {
                     IO.println("Invalid input. Try again");
@@ -60,6 +61,14 @@ public class Game {
         }
 
         player2Name = IO.readln("Enter Player 2 Name: ");
+        while (true) {
+            if (player2Name.equals(player1Name)) {
+                IO.println("Name taken. Try a new one");
+                player2Name = IO.readln("Enter Player 2 Name: ");
+                continue;
+            }
+            break;
+        }
         while (true) {
             char[] number = console.readPassword("Enter Player 2 Number (of " + digitCount + " digits) or 'r' for a random number: ");
             p1Target = new String(number);
@@ -72,11 +81,27 @@ public class Game {
                 }
             } catch (NumberFormatException n) {
                 if (p1Target.equals("r")) {
-                    p1Target = Integer.toString((int) (Math.random() * Math.pow(10, digitCount)));
+                    p1Target = Integer.toString(generateRandom(digitCount));
                     break;
                 }
             }
         }
+    }
+
+    public int generateRandom(int digitCount) {
+        if (digitCount <= 0) {
+            throw new IllegalArgumentException("Digit count must be at least 1");
+        }
+        
+        int min = (int) Math.pow(10, digitCount - 1);
+        int max = (int) Math.pow(10, digitCount) - 1;        
+
+        //for 1 digit numbers - makes sure 0 is still allowed
+        if (digitCount == 1) {
+            min = 0;
+        }
+        
+        return (int) (Math.random() * (max - min + 1)) + min;
     }
 
     public void main() {
@@ -130,14 +155,18 @@ public class Game {
         int minusCount = 0; 
         String guess = "";
         while (true) {
-            guess = IO.readln(player2Name + "'s Guess: ");
-            try {Integer.parseInt(guess);} catch (NumberFormatException n) {
-                IO.println("Try a number this time");
-                continue;
+            guess = IO.readln(player2Name + "'s Guess (or 'r' for random guess/solo play): ");
+            if (guess.equals("r")) {
+                guess = Integer.toString(generateRandom(digitCount));
+            } else {
+                try {Integer.parseInt(guess);} catch (NumberFormatException n) {
+                    IO.println("Try a number this time");
+                    continue;
+                    }
+                if (guess.length() != digitCount) {
+                    IO.println("Invalid Digit Count. Try Again");
+                    continue;
                 }
-            if (guess.length() != digitCount) {
-                IO.println("Invalid Digit Count. Try Again");
-                continue;
             }
             break;
         }
